@@ -10,6 +10,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 
@@ -18,9 +21,21 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 @Entity
 public class ApplicationDetails implements Serializable{
 	
+	
+	
+	public ApplicationDetails() {
+		super();
+	}
+
+
 	@Id
 	@Column(name = "id", unique = true, nullable = false)
-	@GeneratedValue
+	@GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
+	@Type(type="uuid-char")
 	private UUID id;
 	
 	// Name
