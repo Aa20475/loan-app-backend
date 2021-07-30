@@ -1,10 +1,13 @@
 package com.fico.LoanAppBackend.controllers;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,6 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.fico.LoanAppBackend.model.ApplicationDetails;
 import com.fico.LoanAppBackend.model.repositories.ApplicationDetailsRepository;
 
+@CrossOrigin
 @RestController
 public class MainController {
 	ApplicationDetailsRepository applicationDetailsRepository;
@@ -26,8 +30,12 @@ public class MainController {
 
 	@PostMapping("/application")
 	public HttpStatus submitApplication(@RequestBody ApplicationDetails appD) {
+		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+		Date date = new Date();
+		appD.setDate(formatter.format(date).toString());
+		appD.setStatus("In Progress");
 		applicationDetailsRepository.saveAndFlush(appD);
-
+		System.out.println("Got a new Application!");
 		return HttpStatus.OK;
 	}
 
@@ -38,10 +46,11 @@ public class MainController {
 	}
 
 	@GetMapping("/application/id/{id}")
-	public ApplicationDetails getApplicationByID(@PathVariable UUID id) {
+	public ApplicationDetails getApplicationByID(@PathVariable String id) {
+		System.out.println("Got request for "+id);
 		ApplicationDetails appD = new ApplicationDetails();
 		try {
-			appD = applicationDetailsRepository.findById(id).get();
+			appD = applicationDetailsRepository.findById(UUID.fromString(id)).get();
 		} catch (NoSuchElementException e) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Unable to find resource");
 		}

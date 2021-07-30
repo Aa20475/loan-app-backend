@@ -8,6 +8,7 @@ import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -37,6 +38,9 @@ public class ApplicationDetails implements Serializable{
     )
 	@Type(type="uuid-char")
 	private UUID id;
+	
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	private int regId;
 	
 	// Name
 	private String firstName;
@@ -89,6 +93,27 @@ public class ApplicationDetails implements Serializable{
 	private String empPostalCode;
 	private String designation;
 	
+	private String status;
+	private String date;
+	
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public String getDate() {
+		return date;
+	}
+
+	public void setDate(String date) {
+		this.date = date;
+	}
+
+
+	
 	
 	public ApplicationDetails(String firstName, String middleName, String lastName, LocalDate dateOfBirth,
 			String maritalStatus, String addressLine1, String addressLine2, String city, String state,
@@ -124,6 +149,7 @@ public class ApplicationDetails implements Serializable{
 		this.empState = empState;
 		this.empPostalCode = empPostalCode;
 		this.designation = designation;
+		this.status = "In Progress";
 	}
 	
 	@Override
@@ -140,6 +166,9 @@ public class ApplicationDetails implements Serializable{
 	}
 	public UUID getId() {
 		return id;
+	}
+	public int getRegId() {
+		return regId;
 	}
 	public String getFirstName() {
 		return firstName;
