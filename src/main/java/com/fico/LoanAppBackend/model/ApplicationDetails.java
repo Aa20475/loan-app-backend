@@ -5,11 +5,14 @@ import java.time.LocalDate;
 import java.util.Objects;
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
@@ -39,8 +42,7 @@ public class ApplicationDetails implements Serializable{
 	@Type(type="uuid-char")
 	private UUID id;
 	
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	private int regId;
+	private long regId;
 	
 	// Name
 	private String firstName;
@@ -167,8 +169,11 @@ public class ApplicationDetails implements Serializable{
 	public UUID getId() {
 		return id;
 	}
-	public int getRegId() {
+	public long getRegId() {
 		return regId;
+	}
+	public void setRegId(long regId) {
+		this.regId = regId;
 	}
 	public String getFirstName() {
 		return firstName;
@@ -333,6 +338,7 @@ public class ApplicationDetails implements Serializable{
 		this.designation = designation;
 	}
 
+	
 
 	@Override
 	public boolean equals(Object obj) {
@@ -347,5 +353,9 @@ public class ApplicationDetails implements Serializable{
 	}
 	
 	
-	
+	@Override
+	public int hashCode() {
+		return this.id.hashCode();
+		
+	}
 }

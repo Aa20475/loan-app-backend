@@ -34,6 +34,8 @@ public class MainController {
 		Date date = new Date();
 		appD.setDate(formatter.format(date).toString());
 		appD.setStatus("In Progress");
+		appD = applicationDetailsRepository.saveAndFlush(appD);
+		appD.setRegId(appD.getId().hashCode());
 		applicationDetailsRepository.saveAndFlush(appD);
 		System.out.println("Got a new Application!");
 		return HttpStatus.OK;
