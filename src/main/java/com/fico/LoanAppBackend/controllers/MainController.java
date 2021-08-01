@@ -45,7 +45,7 @@ public class MainController {
 		this.applicationDetailsRepository = applicationDetailsRepository;
 	}
 
-	@PostMapping("/application")
+	@PostMapping(path = "/application" , produces = "application/vnd.fico.dmp-[1.0-1.6]+json")
 	public HttpStatus submitApplication(@RequestBody ApplicationDetails appD) {
 		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 		Date date = new Date();
