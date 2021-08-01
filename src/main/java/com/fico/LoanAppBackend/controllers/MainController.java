@@ -1,6 +1,8 @@
 package com.fico.LoanAppBackend.controllers;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -58,6 +60,46 @@ public class MainController {
 		String jsonRequest=null;
 		String result="";
 		creditScoreRes respD=null;
+
+		System.out.println("Got a new Application!");
+
+		Period period = Period.between(appD.getDateOfBirth(), LocalDate.now());
+		
+		if(Integer.parseInt(stringarray[1])<6 && stringarray[0]=="0" ) {
+			appD.setStatus("REJECTED");
+			appD.setCredScore("0");
+			appD.setReason("Insufficient Work Experience");
+
+			appD = applicationDetailsRepository.saveAndFlush(appD);
+			
+			appD.setRegId(appD.getId().hashCode());
+			
+			applicationDetailsRepository.saveAndFlush(appD);
+			return HttpStatus.OK; 
+		}else if(period.getYears()<18 || period.getYears()>65) {
+			appD.setStatus("REJECTED");
+			appD.setCredScore("0");
+			appD.setReason("Age is not between 18 and 65. Ineligible");
+
+			appD = applicationDetailsRepository.saveAndFlush(appD);
+			
+			appD.setRegId(appD.getId().hashCode());
+			
+			applicationDetailsRepository.saveAndFlush(appD);
+			return HttpStatus.OK; 
+		}else if( appD.getAnnualSalary()<10000) {
+			appD.setStatus("REJECTED");
+			appD.setCredScore("0");
+			appD.setReason("Insufficient Annual Salary");
+
+			appD = applicationDetailsRepository.saveAndFlush(appD);
+			
+			appD.setRegId(appD.getId().hashCode());
+			
+			applicationDetailsRepository.saveAndFlush(appD);
+			return HttpStatus.OK; 
+		}
+		
 		DataModelRequestJSON DMR=new DataModelRequestJSON(appD.getSSN(),appD.getAmount(),appD.getWorkExp(),appD.getAnnualSalary(),appD.getPurpose());
 		try {
 			
@@ -65,23 +107,23 @@ public class MainController {
 			HttpEntity<String> entity=new HttpEntity<String>(jsonRequest,header);
 			result=restTemplate.postForObject("http://localhost:8200/predict", entity, String.class);
 			respD=mapper.readValue(result,creditScoreRes.class);
-			System.out.println("Got a new Application!");
 			System.out.println(result);
 			appD.setStatus(respD.getCRED_APPROVAL_STATUS());
-			appD = applicationDetailsRepository.saveAndFlush(appD);
-			appD.setRegId(appD.getId().hashCode());
-			applicationDetailsRepository.saveAndFlush(appD);
+			appD.setCredScore(respD.getCRED_SCORE().toString());
+			appD.setReason(respD.getResOrig());
 	
 		} catch (JsonProcessingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			System.out.println("Got a new Application!");
 			System.out.println(result);
 			appD.setStatus("In Progress");
-			appD = applicationDetailsRepository.saveAndFlush(appD);
-			appD.setRegId(appD.getId().hashCode());
-			applicationDetailsRepository.saveAndFlush(appD);
+			return HttpStatus.INTERNAL_SERVER_ERROR;
 		}
+		appD = applicationDetailsRepository.saveAndFlush(appD);
+		
+		appD.setRegId(appD.getId().hashCode());
+		
+		applicationDetailsRepository.saveAndFlush(appD);
 		
 		return HttpStatus.OK;
 	}

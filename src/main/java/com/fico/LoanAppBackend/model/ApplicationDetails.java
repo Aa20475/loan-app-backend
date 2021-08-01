@@ -96,6 +96,8 @@ public class ApplicationDetails implements Serializable{
 	private String designation;
 	
 	private String status;
+	private String credScore;
+	private String reason;
 	private String date;
 	
 	public String getStatus() {
@@ -113,10 +115,23 @@ public class ApplicationDetails implements Serializable{
 	public void setDate(String date) {
 		this.date = date;
 	}
-
-
 	
-	
+	public String getCredScore() {
+		return credScore;
+	}
+
+	public void setCredScore(String credScore) {
+		this.credScore = credScore;
+	}
+
+	public String getReason() {
+		return reason;
+	}
+
+	public void setReason(String reason) {
+		this.reason = reason;
+	}
+
 	public ApplicationDetails(String firstName, String middleName, String lastName, LocalDate dateOfBirth,
 			String maritalStatus, String addressLine1, String addressLine2, String city, String state,
 			String postalCode, String sSN, String homeNo, String officeNo, String mobileNo, String email, Double amount,
@@ -152,6 +167,8 @@ public class ApplicationDetails implements Serializable{
 		this.empPostalCode = empPostalCode;
 		this.designation = designation;
 		this.status = "In Progress";
+		this.credScore = "In Progress";
+		this.reason = "In Progress";
 	}
 	
 	@Override
@@ -173,7 +190,7 @@ public class ApplicationDetails implements Serializable{
 		return regId;
 	}
 	public void setRegId(long regId) {
-		this.regId = regId;
+		this.regId = regId<0?-regId:regId;
 	}
 	public String getFirstName() {
 		return firstName;
