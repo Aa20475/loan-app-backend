@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: loan-app-backend
+  labels:
+    app: loan-backend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: loan-backend
+  template:
+    metadata:
+      labels:
+        app: loan-backend
+    spec:
+      containers:
+      - name: loan-backend
+        image: aa20475/loan-app-backend:0.0.1-SNAPSHOT
+        ports:
+        - containerPort: 8080
+        env:
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: database-name
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: user-username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: user-password
