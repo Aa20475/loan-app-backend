@@ -128,7 +128,7 @@ public class MainController {
 		return HttpStatus.OK;
 	}
 
-	@GetMapping("/application/all")
+	@GetMapping(path="/application/all" consumes = "application/vnd.com.fico.dmp.v1_0+json")
 	public Iterable<ApplicationDetails> getApplications() {
 		System.out.println("Got a request");
 		return applicationDetailsRepository.findAll();
@@ -146,7 +146,7 @@ public class MainController {
 		return appD;
 	}
 
-	@GetMapping("/application/ssn/{ssn}")
+	@GetMapping(path="/application/ssn/{ssn}" consumes = "application/vnd.com.fico.dmp.v1_0+json")
 	public List<ApplicationDetails> getApplicationBySSN(@PathVariable String ssn) {
 		List<ApplicationDetails> appD;
 		appD = applicationDetailsRepository.findBySsn(ssn);
